@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "hvorerfu-f73d0": {
+      "hosting": {
+        "HvorErFu": [
+          "hvorerfu-f73d0"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "hvorerfu-f73d0"
+  }
+}
