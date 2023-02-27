@@ -1,7 +1,7 @@
 {
   "hosting": {
     "target": "HvorErFu",
-    "public": "src",
+    "public": "dist/hvor-er-fu",
     "ignore": [
       "**/.*"
     ],
