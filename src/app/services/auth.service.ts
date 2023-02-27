@@ -1,6 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
+
 import { User } from './user.model';
-import * as auth from 'firebase/auth';
+import * as auth from '@firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import {
   AngularFirestore,

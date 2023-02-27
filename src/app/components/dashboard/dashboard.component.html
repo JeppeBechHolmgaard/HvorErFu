@@ -33,6 +33,27 @@
           <!-- Show user data when logged in -->
           <div class="row" *ngIf="authService.userData as user">
             <div class="col-md-12">
+
+                <google-map
+                height="700px"
+                width="100%"
+                [zoom]="zoom"
+                [center]="center"
+                [options]="options"
+                ><map-marker
+                *ngFor="let marker of markers"
+                [position]="marker.position"
+                [label]="marker.label"
+                [title]="marker.title"
+                [options]="marker.options"
+                >
+                </map-marker></google-map>
+                <button (click)="zoomIn()">Zoom in</button>
+                <button (click)="zoomOut()">Zoom out</button>
+
+
+<div>Latitude: {{center.lat}}</div>
+<div>Longitude: {{center.lng}}</div>
               <div class="media">
                 <img class="align-self-start mr-5 img-thumbnail rounded-circle" src="{{(user.photoURL) ? user.photoURL : 'src\assets\182-1829287_cammy-lin-ux-designer-circle-picture-profile-girl.png'}}"
                   alt="{{user.displayName}}">

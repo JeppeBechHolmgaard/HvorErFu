@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { LocationStrategy, HashLocationStrategy} from '@angular/common';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -23,7 +24,7 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
-import { AuthComponent } from './services/auth/auth.component';
+
 
 
 
@@ -35,11 +36,10 @@ import { AuthComponent } from './services/auth/auth.component';
     SignUpComponent,
     ForgotPasswordComponent,
     VerifyEmailComponent,
-    AuthComponent
+    
   ],
   imports: [
-    BrowserModule,
-    AppRoutingModule,
+
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAnalytics(() => getAnalytics()),
     provideAuth(() => getAuth()),
@@ -50,9 +50,12 @@ import { AuthComponent } from './services/auth/auth.component';
     providePerformance(() => getPerformance()),
     provideRemoteConfig(() => getRemoteConfig()),
     provideStorage(() => getStorage()),
-    GoogleMapsModule
+    GoogleMapsModule,
+    BrowserModule,
+    AppRoutingModule,
   ],
   providers: [
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
     ScreenTrackingService,UserTrackingService, {provide: LocationStrategy, useClass: HashLocationStrategy},
     AuthService,
   ],
