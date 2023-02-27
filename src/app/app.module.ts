@@ -17,6 +17,8 @@ import { providePerformance,getPerformance } from '@angular/fire/performance';
 import { provideRemoteConfig,getRemoteConfig } from '@angular/fire/remote-config';
 import { provideStorage,getStorage } from '@angular/fire/storage';
 import { GoogleMapsModule } from '@angular/google-maps'
+import { AuthService } from "./services/auth.service";
+
 
 
 @NgModule({
@@ -40,6 +42,7 @@ import { GoogleMapsModule } from '@angular/google-maps'
   ],
   providers: [
     ScreenTrackingService,UserTrackingService, {provide: LocationStrategy, useClass: HashLocationStrategy},
+    AuthService,
   ],
   bootstrap: [AppComponent]
 })
