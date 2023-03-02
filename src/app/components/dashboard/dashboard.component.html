@@ -54,8 +54,10 @@
 
 <div>Latitude: {{center.lat}}</div>
 <div>Longitude: {{center.lng}}</div>
+<button (click)="realTimeUpdate()">update location</button>
+            <app-chat></app-chat>
               <div class="media">
-                <img class="align-self-start mr-5 img-thumbnail rounded-circle" src="{{(user.photoURL) ? user.photoURL : 'src\assets\182-1829287_cammy-lin-ux-designer-circle-picture-profile-girl.png'}}"
+                <img class="align-self-start mr-5 img-thumbnail rounded-circle" src="{{user.photoURL}}"
                   alt="{{user.displayName}}">
                 <div class="media-body">
                   <h1>Hello: <strong>{{(user.displayName) ? user.displayName : 'User'}}</strong></h1>

@@ -97,6 +97,9 @@ export class AuthService {
     return this.afAuth
       .signInWithPopup(provider)
       .then((result) => {
+        if(result.user!=null && !result.user.photoURL){
+          result.user.photoURL=`src\\assets\\182-1829287_cammy-lin-ux-designer-circle-picture-profile-girl.png`;
+        }
         this.router.navigate(['dashboard']);
         this.SetUserData(result.user);
       })

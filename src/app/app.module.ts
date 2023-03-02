@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { LocationStrategy, HashLocationStrategy} from '@angular/common';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
+import { FormsModule } from '@angular/forms';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -24,6 +25,7 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
+import { ChatComponent } from './chat/chat.component';
 
 
 
@@ -36,6 +38,7 @@ import { VerifyEmailComponent } from './components/verify-email/verify-email.com
     SignUpComponent,
     ForgotPasswordComponent,
     VerifyEmailComponent,
+    ChatComponent,
     
   ],
   imports: [
@@ -53,6 +56,7 @@ import { VerifyEmailComponent } from './components/verify-email/verify-email.com
     GoogleMapsModule,
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
   ],
   providers: [
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },
