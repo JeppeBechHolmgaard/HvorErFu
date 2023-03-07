@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { LocationStrategy, HashLocationStrategy} from '@angular/common';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
-import { FormsModule } from '@angular/forms';
+import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 
+import {CommonModule } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,7 +27,11 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { ChatComponent } from './chat/chat.component';
-
+import { WhoIsUserPipe } from './who-is-user.pipe';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field'
+import {MatRadioModule} from '@angular/material/radio';
 
 
 
@@ -39,6 +44,8 @@ import { ChatComponent } from './chat/chat.component';
     ForgotPasswordComponent,
     VerifyEmailComponent,
     ChatComponent,
+    WhoIsUserPipe,
+    // WhoIsUserNamePipe,
     
   ],
   imports: [
@@ -57,6 +64,12 @@ import { ChatComponent } from './chat/chat.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    BrowserAnimationsModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatRadioModule
   ],
   providers: [
     { provide: FIREBASE_OPTIONS, useValue: environment.firebase },

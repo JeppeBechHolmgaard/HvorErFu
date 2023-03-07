@@ -55,6 +55,26 @@
 <div>Latitude: {{center.lat}}</div>
 <div>Longitude: {{center.lng}}</div>
 <button (click)="realTimeUpdate()">update location</button>
+
+<div>Your groups: {{userGroups }}</div>
+<div>
+  <h4>group select</h4>
+  <div >
+    
+    <button type="button" *ngFor="let group of userGroups" (click)="selectGroup(group)">{{group}}</button>
+
+  </div>
+  <p> Selected group: {{selectedGroup}} </p>
+  <h4>invite to group</h4>
+  <form (ngSubmit)="searchUser($event)">
+    <input name="player" value="Name">
+ </form>
+        <div>
+        <ul>
+          <li *ngFor="let user of searchResults">{{user.displayName}}<button (click)="inviteFriend(user.uid)">Invite friend to group</button></li>
+        </ul>
+        </div>
+    </div>
             <app-chat></app-chat>
               <div class="media">
                 <img class="align-self-start mr-5 img-thumbnail rounded-circle" src="{{user.photoURL}}"

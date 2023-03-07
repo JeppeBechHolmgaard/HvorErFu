@@ -12,13 +12,19 @@ import { FireDBService } from '../../services/fire-db.service';
 export class DashboardComponent implements OnInit {
   constructor(public authService: AuthService,     public dataService: FireDBService,
     ) {
-
-    console.log(this.authService.userData.photoURL);
+      this.dataService.makeUserSearchable();
+      this.dataService.getGroups().then((res)=>{      
+       console.log(res);
+       
+       this.userGroups=res;
+      });
     
   }
   markers:any={};
   zoom = 12;
-  jeppe = 1;
+  searchResults:any;
+  selectedGroup:string='';
+  userGroups:any=[];
   center!: google.maps.LatLngLiteral;
   options: google.maps.MapOptions = {
     mapTypeId: 'hybrid',
@@ -41,15 +47,16 @@ export class DashboardComponent implements OnInit {
     lng: 9.9883962};
   
     ngOnInit() :void{
+     
+
     if(navigator.geolocation){
-      
       this.watchPosition()
       this.markers.push({
         position: this.positionObj,
         title: 'Her står du nu',
         options: { animation: google.maps.Animation.BOUNCE,
         icon:this.icon}
-  });
+      });
     }
     else{console.log('location is not supported!!');}
 
@@ -59,10 +66,10 @@ export class DashboardComponent implements OnInit {
 
       
 realTimeUpdate(){
-  this.dataService.get('locationGroups','testGroup').then((res:any)=>{
-    for (const uid in res) {
+  this.dataService.get('chats','selectedGroup').then((res:any)=>{
+    for (const uid in res.chatMembers
+      ) {
       console.log(uid);
-      console.log(this.markers);
       //TODO: find smarter way
       this.markers=[];
       this.dataService.get('users',uid.toString()).then((data:any)=>{
@@ -105,8 +112,9 @@ realTimeUpdate(){
 }  })
       
 }
-  
+
 watchPosition(){
+  
   navigator.geolocation.watchPosition((position)=>{
     console.log('lat: '+position.coords.latitude+', lon: '+position.coords.longitude);
     this.positionObj={
@@ -120,7 +128,7 @@ watchPosition(){
     };
     
     this.dataService.updateLocation({[this.authService.userData.uid]:this.positionObj});
-    this.realTimeUpdate()
+    // this.realTimeUpdate()
     console.log(this.markers[0].position);
     this.markers[0].position=this.positionObj;
     console.log(this.markers[0].position);
@@ -139,9 +147,23 @@ watchPosition(){
     if (this.zoom > this.options.minZoom!) this.zoom--;
   }
 
-   writeData(){
-    this.jeppe+=1;
-    // this.dataService.updateLocation({Jeppe:this.jeppe});
-   }
+  searchUser(event:any){
+    console.log(event.target.player.value);
+    this.dataService.queryUsers(event.target.player.value.toString()).then((res:any[])=>{
+      this.searchResults=res;
+    })
+
+  }
+  selectGroup(group:string){
+    this.selectedGroup=group
+    this.dataService.currentGroup(this.selectedGroup);
+  }
+  inviteFriend(friendUID:any){
+    let curGroup=this.dataService.currentGroup
+    console.log(curGroup);
+    this.dataService.sendGroupRequest(friendUID,'Vil du være med i denne gruppe?',this.selectedGroup)
+    
+  } 
+
   }
   

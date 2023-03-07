@@ -1,27 +1,28 @@
 <h1>chat:</h1>
 <ng-container>
-
-  {{chat}}
-    <!-- <div class="chat">
-
-
-      <div class="msg" *ngFor="let msg of chat.messages; trackBy: trackByCreated">
+<button (click)="createChatService()">Make Chat</button>
+    <div class="chat">
+      <div class="msg" *ngFor="let item of source ;trackBy: trackByCreated">
 
         <div class="user">
-          <img [src]="msg.user?.photoURL">
-          <div>{{ msg.user?.displayName }}</div>
+          <img [src]="item.photoURL" style="height: 15px; border-radius: 50%;">
+          <!-- <div>{{item.uid}}</div> -->
+          <div>{{item.displayName}}</div>
+
+          <!-- <div>{{ item.createdAt }}</div> -->
+
         </div>
 
-        <p>{{ msg.content }}</p>
+        <p style="font-style: italic; font-size: medium;">{{ item.content }}</p>
 
       </div>
 
     </div>
 
     <div class="form">
-      <input [(ngModel)]="newMsg" (keydown.enter)="submit(chat.id)">
+      <input [(ngModel)]="newMsg" (keydown.enter)="submit()">
 
-      <button (click)="submit(chat.id)">Send</button>
-    </div> -->
+      <button (click)="submit()">Send</button>
+    </div>
 
-</ng-container>
+  </ng-container>
