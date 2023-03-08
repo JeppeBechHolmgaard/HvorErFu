@@ -65,6 +65,13 @@
 
   </div>
   <p> Selected group: {{selectedGroup}} </p>
+  <div>
+    <p>Group invites</p>
+
+    <ul>
+      <li *ngFor="let groupInvite of friendRequest">{{groupInvite.message}}<button (click)="(user.uid)">Accept invite to group</button></li>
+    </ul>
+    </div>
   <h4>invite to group</h4>
   <form (ngSubmit)="searchUser($event)">
     <input name="player" value="Name">

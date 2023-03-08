@@ -44,10 +44,8 @@ export class FireDBService {
     const data = {
       chatName:[chatNameSetter],
       uid,
-      chatMembers: [uid],
-      location:[],
+      chatMembers: {[uid]:{lat:0,lng:0}},
       createdAt: Date.now(),
-      count: 0,
       messages: []
     };
     
@@ -93,7 +91,27 @@ await updateDoc(groupRequest, {
   groupRequest: arrayUnion(data)
 });}
 
-
+async getUsersFriendRequest(){
+    const db = getFirestore();
+    const uid = await this.authService.userData.uid;
+    console.log(uid);
+  
+    
+    const docSnap2 = await getDoc(doc(db, 'users', uid));
+    if (docSnap2.exists()) {
+      console.log("Document data:", docSnap2.data());
+      let data:any=await docSnap2.data();  
+      console.log(data.groupRequest);
+      return data.groupRequest;
+  
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+      return}
+  
+    
+    ;
+  }
    
 
 
@@ -156,6 +174,10 @@ async getGroups(){
   ;
 }
 
+acceptOrDecline(groupUid:string){
+  groupUid
+}
+
 async queryUsers(displayName:string){
 let results:any[] = [];
 const db = getFirestore();
@@ -173,21 +195,22 @@ return results;
 async updateLocation(data:any){
   const db = getFirestore();
   const uid = await this.authService.userData.uid;
-
+  uid.toString()
   const docRef = doc(db, 'users', uid);
   const docSnap = await getDoc(docRef);
   let userData:any = await docSnap.data();
-  userData.groups.forEach((element:string) => {
-   updateDoc(doc(db, "chats", element), {
-    location: arrayUnion(data)
-  });
   
+  userData.groups.forEach((element:string) => {
+    console.log(element);
+   updateDoc(doc(db, "chats", element),
+   {['chatMembers.'+uid]:[data]});
 
     // const docRef = doc(db, "chats", id);
     // return await docSnapshots(docRef).pipe(map(data => data.data()))
     
 
 })}
+
 
 currentGroup(update?:string){
   if(update){

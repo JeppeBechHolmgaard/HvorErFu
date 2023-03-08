@@ -18,6 +18,11 @@ export class DashboardComponent implements OnInit {
        
        this.userGroups=res;
       });
+
+      this.dataService.getUsersFriendRequest().then((res)=>{
+        console.log(res);
+        this.friendRequest=res
+      })
     
   }
   markers:any={};
@@ -25,6 +30,7 @@ export class DashboardComponent implements OnInit {
   searchResults:any;
   selectedGroup:string='';
   userGroups:any=[];
+  friendRequest:any=[];
   center!: google.maps.LatLngLiteral;
   options: google.maps.MapOptions = {
     mapTypeId: 'hybrid',
@@ -66,15 +72,18 @@ export class DashboardComponent implements OnInit {
 
       
 realTimeUpdate(){
-  this.dataService.get('chats','selectedGroup').then((res:any)=>{
+  this.dataService.get('chats',this.selectedGroup).then((res:any)=>{
+    console.warn(res);
+    
     for (const uid in res.chatMembers
       ) {
-      console.log(uid);
+
+
       //TODO: find smarter way
       this.markers=[];
       this.dataService.get('users',uid.toString()).then((data:any)=>{
         this.markers.push({
-          position: res[uid],
+          position: res.chatMembers[uid][0],
           title: 'Her står du nu',
           options: { animation: google.maps.Animation.BOUNCE,
           icon: { 
@@ -127,7 +136,7 @@ watchPosition(){
       lng: position.coords.longitude,
     };
     
-    this.dataService.updateLocation({[this.authService.userData.uid]:this.positionObj});
+    this.dataService.updateLocation(this.positionObj);
     // this.realTimeUpdate()
     console.log(this.markers[0].position);
     this.markers[0].position=this.positionObj;
