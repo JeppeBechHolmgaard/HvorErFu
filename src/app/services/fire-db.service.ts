@@ -167,7 +167,6 @@ querySnapshot.forEach((doc) => {
   results.push(doc.data())
   
 });
-console.log(results);
 return results;
 }
 
