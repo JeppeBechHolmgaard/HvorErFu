@@ -4,6 +4,7 @@ import { getFirestore, doc,addDoc, getDoc, getDocs, setDoc,updateDoc, collection
 import { AuthService } from './auth.service';
 import { Observable, bindCallback, map, Subject } from 'rxjs';
 import { docSnapshots } from '@angular/fire/firestore';
+import { group } from '@angular/animations';
 
 
 export class message {
@@ -34,7 +35,6 @@ export class FireDBService {
     let displayName = await this.authService.userData.displayName;
     displayName = displayName.toLowerCase()
     await updateDoc(doc(db, "users", uid),{displayNameLowercase:displayName})
-    await updateDoc(doc(db, "users", uid),{groupRequest:[]})
   }
 
   async createChat(chatNameSetter:string) {
@@ -174,9 +174,15 @@ async getGroups(){
   ;
 }
 
-acceptOrDecline(groupUid:string){
-  groupUid
-}
+async acceptOrDecline(groupUid:string,accepted:boolean){
+  const db = getFirestore();
+  let uid = await this.authService.userData.uid;
+
+  if(accepted==true)
+  {await updateDoc(doc(db, "users", uid),  {'groups': arrayUnion(groupUid)})}
+  }
+  
+
 
 async queryUsers(displayName:string){
 let results:any[] = [];
@@ -196,14 +202,24 @@ async updateLocation(data:any){
   const db = getFirestore();
   const uid = await this.authService.userData.uid;
   uid.toString()
+  
   const docRef = doc(db, 'users', uid);
   const docSnap = await getDoc(docRef);
   let userData:any = await docSnap.data();
   
   userData.groups.forEach((element:string) => {
-    console.log(element);
-   updateDoc(doc(db, "chats", element),
-   {['chatMembers.'+uid]:[data]});
+    
+    getDoc(doc(db, "chats", element)).then(res=>{
+      let temp:any=res.data()
+     console.warn(temp['chatMembers'][uid][0])
+     if(temp['chatMembers'][uid][0]==null){
+      console.log('tracking disabled');
+     }else{
+      updateDoc(doc(db, "chats", element),
+      {['chatMembers.'+uid]:[data]});
+     }
+    })
+   
 
     // const docRef = doc(db, "chats", id);
     // return await docSnapshots(docRef).pipe(map(data => data.data()))
@@ -211,6 +227,20 @@ async updateLocation(data:any){
 
 })}
 
+async disableLocation(groupUID:string){
+  const db = getFirestore();
+  const uid = await this.authService.userData.uid;
+  uid.toString()
+   updateDoc(doc(db, "chats", groupUID),
+   {['chatMembers.'+uid]:[null]});
+}
+async activateLocation(groupUID:string,data:any){
+  const db = getFirestore();
+  const uid = await this.authService.userData.uid;
+  uid.toString()
+   updateDoc(doc(db, "chats", groupUID),
+   {['chatMembers.'+uid]:[data]});
+}
 
 currentGroup(update?:string){
   if(update){
@@ -225,5 +255,8 @@ currentGroup(update?:string){
 currenGroupObservable(): Observable<any>{
     return this.currentGroupId.asObservable();
 }
+
+
+
 
 }

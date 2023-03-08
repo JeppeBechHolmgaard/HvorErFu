@@ -14,7 +14,7 @@ export class DashboardComponent implements OnInit {
     ) {
       this.dataService.makeUserSearchable();
       this.dataService.getGroups().then((res)=>{      
-       console.log(res);
+       console.warn(res);
        
        this.userGroups=res;
       });
@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
   }
   markers:any={};
   zoom = 12;
+  showActivate:boolean=false;
   searchResults:any;
   selectedGroup:string='';
   userGroups:any=[];
@@ -70,18 +71,21 @@ export class DashboardComponent implements OnInit {
   
   }
 
-      
+
 realTimeUpdate(){
   this.dataService.get('chats',this.selectedGroup).then((res:any)=>{
     console.warn(res);
     
     for (const uid in res.chatMembers
       ) {
-
+        console.warn(res.chatMembers[uid][0]);
+        
 
       //TODO: find smarter way
       this.markers=[];
+      
       this.dataService.get('users',uid.toString()).then((data:any)=>{
+        
         this.markers.push({
           position: res.chatMembers[uid][0],
           title: 'Her står du nu',
@@ -137,7 +141,7 @@ watchPosition(){
     };
     
     this.dataService.updateLocation(this.positionObj);
-    // this.realTimeUpdate()
+    this.realTimeUpdate()
     console.log(this.markers[0].position);
     this.markers[0].position=this.positionObj;
     console.log(this.markers[0].position);
@@ -166,6 +170,8 @@ watchPosition(){
   selectGroup(group:string){
     this.selectedGroup=group
     this.dataService.currentGroup(this.selectedGroup);
+    this.realTimeUpdate()
+
   }
   inviteFriend(friendUID:any){
     let curGroup=this.dataService.currentGroup
@@ -173,6 +179,16 @@ watchPosition(){
     this.dataService.sendGroupRequest(friendUID,'Vil du være med i denne gruppe?',this.selectedGroup)
     
   } 
-
+  acceptOrDeclineInvite(groupId:string, accepted:boolean){
+    this.dataService.acceptOrDecline(groupId,accepted)
+  }
+  disableLocation(groupId:string){
+    this.showActivate=false
+    this.dataService.disableLocation(groupId)
+  }
+  activateLocation(groupId:string){
+    this.showActivate=true
+    this.dataService.activateLocation(groupId,this.positionObj)
+  }
   }
   

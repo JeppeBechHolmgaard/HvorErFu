@@ -56,7 +56,7 @@
 <div>Longitude: {{center.lng}}</div>
 <button (click)="realTimeUpdate()">update location</button>
 
-<div>Your groups: {{userGroups }}</div>
+<div>Your groups:</div>
 <div>
   <h4>group select</h4>
   <div >
@@ -65,11 +65,16 @@
 
   </div>
   <p> Selected group: {{selectedGroup}} </p>
+  <div >
+  <button (click)="disableLocation(selectedGroup)" >Disable Group</button>
+  <button (click)="activateLocation(selectedGroup)" >Activate Group</button>
+
+  </div>
   <div>
-    <p>Group invites</p>
+    <p>Group invites {{friendRequest}}</p>
 
     <ul>
-      <li *ngFor="let groupInvite of friendRequest">{{groupInvite.message}}<button (click)="(user.uid)">Accept invite to group</button></li>
+      <li *ngFor="let groupInvite of friendRequest">{{groupInvite.message}}{{groupInvite.groupUid}}<button (click)="acceptOrDeclineInvite(groupInvite.groupUid,true)">Accept invite to group</button></li>
     </ul>
     </div>
   <h4>invite to group</h4>
