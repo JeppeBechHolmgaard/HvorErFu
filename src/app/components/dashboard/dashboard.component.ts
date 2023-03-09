@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { composition, forEach } from 'mathjs';
-import { interval } from 'rxjs';
+import { interval, timeInterval } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { FireDBService } from '../../services/fire-db.service';
 
@@ -12,17 +12,18 @@ import { FireDBService } from '../../services/fire-db.service';
 export class DashboardComponent implements OnInit {
   constructor(public authService: AuthService,     public dataService: FireDBService,
     ) {
+      this.mapReloader()
       this.dataService.makeUserSearchable();
-      this.dataService.getGroups().then((res)=>{      
-       console.warn(res);
+      // this.dataService.getGroups().then((res)=>{      
+      //  console.warn("getGroups data: ",res);
        
-       this.userGroups=res;
-      });
+      //  this.userGroups=res;
+      // });
 
-      this.dataService.getUsersFriendRequest().then((res)=>{
-        console.log(res);
-        this.friendRequest=res
-      })
+      // this.dataService.getUsersFriendRequest().then((res)=>{
+      //   console.log(res);
+      //   this.friendRequest=res
+      // })
     
   }
   markers:any={};
@@ -53,17 +54,20 @@ export class DashboardComponent implements OnInit {
   positionObj = {lat: 57.0123113,
     lng: 9.9883962};
   
-    ngOnInit() :void{
-     
+async ngOnInit():Promise<void>{
+      const doc$ = await this.dataService.getGroups();
+      doc$.subscribe(data => {
+        this.userGroups=data;
+      });
+      const friendRequst$ = await this.dataService.getUsersFriendRequest();
+      friendRequst$.subscribe(data => {
+        console.warn(data);
+        this.friendRequest=data;
+      });
 
     if(navigator.geolocation){
       this.watchPosition()
-      this.markers.push({
-        position: this.positionObj,
-        title: 'Her står du nu',
-        options: { animation: google.maps.Animation.BOUNCE,
-        icon:this.icon}
-      });
+      this.center = this.positionObj;
     }
     else{console.log('location is not supported!!');}
 
@@ -73,19 +77,12 @@ export class DashboardComponent implements OnInit {
 
 
 realTimeUpdate(){
-  this.dataService.get('chats',this.selectedGroup).then((res:any)=>{
-    console.warn(res);
-    
+  this.dataService.get('chats',this.selectedGroup).then((res:any)=>{    
     for (const uid in res.chatMembers
-      ) {
-        console.warn(res.chatMembers[uid][0]);
-        
-
-      //TODO: find smarter way
+      ) {        
+      //TODO: find smarter way, evt onsnapshot
       this.markers=[];
-      
       this.dataService.get('users',uid.toString()).then((data:any)=>{
-        
         this.markers.push({
           position: res.chatMembers[uid][0],
           title: 'Her står du nu',
@@ -99,28 +96,6 @@ realTimeUpdate(){
         }})
       
       }) 
-  //     if(!this.markers.includes(uid)){
-       
-  //       this.dataService.get('users',uid.toString()).then((data:any)=>{
-  //         this.markers.push({
-  //           position: res[uid],
-  //           title: 'Her står du nu',
-  //           options: { animation: google.maps.Animation.BOUNCE,
-  //           icon: { 
-  //           url: data.photoURL+'#custom_marker',
-  //           scaledSize: new google.maps.Size(40, 40),
-  //           origin: new google.maps.Point(0,0), // origin
-  //           anchor: new google.maps.Point(0, 0) // anchor,
-  //           }
-  //         }})
-        
-  //       }) 
-
-      
-  
-
-  // }
-
 
 }  })
       
@@ -135,16 +110,11 @@ watchPosition(){
       lng: Number(position.coords.longitude),
     };
 
-    this.center = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-    };
+    
     
     this.dataService.updateLocation(this.positionObj);
-    this.realTimeUpdate()
-    console.log(this.markers[0].position);
-    this.markers[0].position=this.positionObj;
-    console.log(this.markers[0].position);
+    // this.markers[0].position=this.positionObj;
+    // console.log(this.markers[0].position);
 
   }),(err:any)=>{
     console.log(err);
@@ -190,5 +160,15 @@ watchPosition(){
     this.showActivate=true
     this.dataService.activateLocation(groupId,this.positionObj)
   }
+  mapReloader(){
+    setInterval(()=>{
+      this.realTimeUpdate()
+      console.log('map updated');
+      //need to stop when view is terminated
+    }, 4000)}
+  
+  
+  
   }
+
   

@@ -1,0 +1,4 @@
+img[src$="#custom_marker"]{
+    border: 2px solid #900 !important;
+    border-radius:50%;
+}

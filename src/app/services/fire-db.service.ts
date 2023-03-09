@@ -42,7 +42,7 @@ export class FireDBService {
     const uid = await this.authService.userData.uid;
 
     const data = {
-      chatName:[chatNameSetter],
+      chatName:chatNameSetter,
       uid,
       chatMembers: {[uid]:{lat:0,lng:0}},
       createdAt: Date.now(),
@@ -94,42 +94,12 @@ await updateDoc(groupRequest, {
 async getUsersFriendRequest(){
     const db = getFirestore();
     const uid = await this.authService.userData.uid;
-    console.log(uid);
-  
-    
-    const docSnap2 = await getDoc(doc(db, 'users', uid));
-    if (docSnap2.exists()) {
-      console.log("Document data:", docSnap2.data());
-      let data:any=await docSnap2.data();  
-      console.log(data.groupRequest);
-      return data.groupRequest;
-  
-    } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
-      return}
-  
-    
+    const docRef = doc(db, "users", uid);
+    return await docSnapshots(docRef).pipe(map((data:any) => data.data().groupRequest))
     ;
   }
    
-
-
-//   async getChat(id:any){
-//     const db = getFirestore();
-
-//     const docRef = doc(db, "chats", id);
-//     const unsub = await onSnapshot(docRef,(res)=>{
-//   if (res.exists()) {
-//   console.log("Document data:", res.data());
-//   return res.data();
-// } else {
-//   // doc.data() will be undefined in this case
-//   console.log("No such document!");
-//   return}},(error)=>{console.error(error);
-//   }
-// );}
-  async getChat(id:any){    
+  async getChat(id:string){    
     const db = getFirestore();
     const docRef = doc(db, "chats", id);
     return await docSnapshots(docRef).pipe(map(data => data.data()))
@@ -158,20 +128,21 @@ async getGroups(){
   console.log(uid);
 
   
-  const docSnap2 = await getDoc(doc(db, 'users', uid));
-  if (docSnap2.exists()) {
-    console.log("Document data:", docSnap2.data());
-    let data:any=await docSnap2.data();  
-    console.log(data.groups);
-    return data.groups;
+  // const docSnap2 = await getDoc(doc(db, 'users', uid));
+  // if (docSnap2.exists()) {
+  //   console.log("Document data:", docSnap2.data());
+  //   let data:any=await docSnap2.data();  
+  //   console.log(data.groups);
+  //   return data.groups;
 
-  } else {
-    // doc.data() will be undefined in this case
-    console.log("No such document!");
-    return}
+  // } else {
+  //   // doc.data() will be undefined in this case
+  //   console.log("No such document!");
+  //   return}
 
   
-  ;
+    const docRef = doc(db, "users", uid);
+    return await docSnapshots(docRef).pipe(map((data:any) => data.data().groups))
 }
 
 async acceptOrDecline(groupUid:string,accepted:boolean){
